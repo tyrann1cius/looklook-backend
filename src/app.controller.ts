@@ -6,65 +6,57 @@ import {
   Delete,
   Param,
   Body,
-  Request,
-  HttpException,
-  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { PromotionService, UserService } from './app.service';
 import { Promotion } from './interfaces/promotion.interface';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { ExpressRequest } from './middlewares/auth.middleware';
+import { AuthGuard } from './auth/auth.guard';
 
 @Controller('promotions')
 export class PromotionsController {
   constructor(private readonly promotionService: PromotionService) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   getPromotion(): Promise<Promotion[]> {
     return this.promotionService.findAll();
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   setPromotion(@Body() promotion: CreatePromotionDto) {
     return this.promotionService.create(promotion);
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id')
   updatePromotion(@Param('id') id: string, @Body() promotion: any) {
     return this.promotionService.update(id, promotion);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.promotionService.delete(id);
   }
 }
 
-@Controller('users')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('users')
   async createUser(@Body() createUserDto: CreateUserDto) {
-    // return this.userService.createUser(createUserDto);
     const user = await this.userService.createUser(createUserDto);
     return this.userService.buildUserResponse(user);
   }
 
-  @Post('login')
+  @Post('users/login')
   async login(@Body() loginDto: LoginDto) {
-    // return this.userService.loginUser(loginDto);
     const user = await this.userService.loginUser(loginDto);
     return this.userService.buildUserResponse(user);
-  }
-
-  @Get()
-  currentUser(@Request() request: ExpressRequest) {
-    if (!request.user) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-    return this.userService.buildUserResponse(request.user);
   }
 }
