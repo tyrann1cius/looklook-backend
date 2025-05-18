@@ -28,6 +28,18 @@ export class PromotionsController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('available')
+  getAvailablePromotion(@UserData() user: UserEntity) {
+    return this.promotionService.findAvailablePromotion(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('redeemed')
+  getRedeemedPromotion(@UserData() user: UserEntity) {
+    return this.promotionService.findRedeemedPromotion(user);
+  }
+
+  @UseGuards(AuthGuard)
   @Post()
   setPromotion(@Body() promotion: CreatePromotionDto) {
     return this.promotionService.create(promotion);

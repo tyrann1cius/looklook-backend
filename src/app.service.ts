@@ -15,6 +15,8 @@ export class PromotionService {
   constructor(
     @Inject('PROMOTION_MODEL')
     private promotionModel: Model<Promotion>,
+    @InjectModel(UserEntity.name)
+    private userModel: Model<UserEntity>,
   ) {}
 
   async create(createPromotionDto: CreatePromotionDto): Promise<Promotion> {
@@ -24,6 +26,18 @@ export class PromotionService {
 
   async findAll(): Promise<Promotion[]> {
     return this.promotionModel.find().exec();
+  }
+
+  async findAvailablePromotion(user: UserEntity) {
+    return this.promotionModel
+      .find({ isActive: true, redeemedUsers: { $ne: user.email } })
+      .exec();
+  }
+
+  async findRedeemedPromotion(user: UserEntity) {
+    return this.promotionModel
+      .find({ isActive: true, redeemedUsers: user.email })
+      .exec();
   }
 
   async update(id: string, updatePromotionDto: any) {
@@ -98,7 +112,6 @@ export class UserService {
       username: userEntity.username,
       email: userEntity.email,
       token: this.generateJwt(userEntity),
-      promotions: userEntity.promotions,
     };
   }
 

@@ -11,9 +11,6 @@ export class UserEntity {
 
   @Prop({ select: false })
   password: string;
-
-  @Prop()
-  promotions: Array<string>;
 }
 
 export const UserEntitySchema = SchemaFactory.createForClass(UserEntity);
