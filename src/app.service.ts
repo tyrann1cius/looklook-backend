@@ -28,20 +28,20 @@ export class PromotionService {
 
   async update(id: string, updatePromotionDto: any) {
     return this.promotionModel
-      .findOneAndUpdate({ id: id }, updatePromotionDto)
+      .findOneAndUpdate({ promoId: id }, updatePromotionDto)
       .exec();
   }
 
   async delete(id: string) {
-    console.log(id);
-    return this.promotionModel.findOneAndDelete({ id: id }).exec();
+    return this.promotionModel.findOneAndDelete({ promoId: id }).exec();
   }
 }
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
+    @InjectModel(UserEntity.name)
+    private userModel: Model<UserEntity>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -82,11 +82,23 @@ export class UserService {
     return user;
   }
 
+  async redeemPromotion(user: UserEntity, id: string) {
+    return this.userModel.updateOne(
+      { email: user.email },
+      {
+        $push: {
+          promotions: id,
+        },
+      },
+    );
+  }
+
   buildUserResponse(userEntity: UserEntity): UserResponseType {
     return {
       username: userEntity.username,
       email: userEntity.email,
       token: this.generateJwt(userEntity),
+      promotions: userEntity.promotions,
     };
   }
 

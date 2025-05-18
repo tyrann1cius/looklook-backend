@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 export const PromotionSchema = new mongoose.Schema({
-  id: String,
+  promoId: String,
   title: String,
   types: Array,
   partners: Array,

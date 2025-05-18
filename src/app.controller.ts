@@ -14,6 +14,8 @@ import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth/auth.guard';
+import { UserData } from './interfaces/userdata.decorator';
+import { UserEntity } from './interfaces/users.entity';
 
 @Controller('promotions')
 export class PromotionsController {
@@ -58,5 +60,11 @@ export class UserController {
   async login(@Body() loginDto: LoginDto) {
     const user = await this.userService.loginUser(loginDto);
     return this.userService.buildUserResponse(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('users/redeem/:id')
+  async redeem(@UserData() user: UserEntity, @Param('id') id: string) {
+    return this.userService.redeemPromotion(user, id);
   }
 }

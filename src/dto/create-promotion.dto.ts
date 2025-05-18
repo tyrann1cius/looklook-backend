@@ -1,5 +1,5 @@
 export class CreatePromotionDto {
-  readonly id: string;
+  readonly promoId: string;
   readonly title: string;
   readonly types: Array<string>;
   readonly partners: Array<string>;
