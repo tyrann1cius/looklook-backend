@@ -21,7 +21,7 @@ import { UserEntity } from './interfaces/users.entity';
 export class PromotionsController {
   constructor(private readonly promotionService: PromotionService) {}
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   getPromotion(): Promise<Promotion[]> {
     return this.promotionService.findAll();

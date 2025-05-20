@@ -15,8 +15,6 @@ export class PromotionService {
   constructor(
     @Inject('PROMOTION_MODEL')
     private promotionModel: Model<Promotion>,
-    @InjectModel(UserEntity.name)
-    private userModel: Model<UserEntity>,
   ) {}
 
   async create(createPromotionDto: CreatePromotionDto): Promise<Promotion> {
@@ -56,6 +54,8 @@ export class UserService {
   constructor(
     @InjectModel(UserEntity.name)
     private userModel: Model<UserEntity>,
+    @Inject('PROMOTION_MODEL')
+    private promotionModel: Model<Promotion>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -97,14 +97,16 @@ export class UserService {
   }
 
   async redeemPromotion(user: UserEntity, id: string) {
-    return this.userModel.updateOne(
-      { email: user.email },
-      {
-        $push: {
-          promotions: id,
+    return this.promotionModel
+      .findOneAndUpdate(
+        { promoId: id },
+        {
+          $push: {
+            redeemedUsers: user.email,
+          },
         },
-      },
-    );
+      )
+      .exec();
   }
 
   buildUserResponse(userEntity: UserEntity): UserResponseType {

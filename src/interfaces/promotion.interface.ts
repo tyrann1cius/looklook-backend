@@ -10,4 +10,5 @@ export interface Promotion extends Document {
   readonly start: Date;
   readonly end: Date;
   readonly redeemUrl: string;
+  readonly redeemedUsers: Array<string>;
 }

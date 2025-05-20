@@ -8,4 +8,5 @@ export class CreatePromotionDto {
   readonly start: Date;
   readonly end: Date;
   readonly redeemUrl: string;
+  readonly redeemedUsers: Array<string>;
 }
