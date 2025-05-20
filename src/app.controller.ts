@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { PromotionService, UserService } from './app.service';
 import { Promotion } from './interfaces/promotion.interface';
@@ -21,7 +22,7 @@ import { UserEntity } from './interfaces/users.entity';
 export class PromotionsController {
   constructor(private readonly promotionService: PromotionService) {}
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
   getPromotion(): Promise<Promotion[]> {
     return this.promotionService.findAll();
@@ -61,6 +62,12 @@ export class PromotionsController {
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @UseGuards(AuthGuard)
+  @Get('users/validate')
+  async validateUser(@Headers() token) {
+    return this.userService.validateUser(token.authorization.split(' ')[1]);
+  }
 
   @Post('users')
   async createUser(@Body() createUserDto: CreateUserDto) {

@@ -1,5 +1,5 @@
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { sign, decode } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable, Inject } from '@nestjs/common';
@@ -57,6 +57,10 @@ export class UserService {
     @Inject('PROMOTION_MODEL')
     private promotionModel: Model<Promotion>,
   ) {}
+
+  async validateUser(token) {
+    return this.decodeJwt(token);
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const user = await this.userModel.findOne({ email: createUserDto.email });
@@ -119,6 +123,10 @@ export class UserService {
 
   generateJwt(userEntity: UserEntity): string {
     return sign({ email: userEntity.email }, 'JWT_SECRET');
+  }
+
+  decodeJwt(jwtToken: string) {
+    return decode(jwtToken);
   }
 
   async findByEmail(email: string) {
