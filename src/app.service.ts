@@ -98,7 +98,7 @@ export class UserService {
 
   async redeemPromotion(user: UserEntity, id: string) {
     return this.promotionModel
-      .findOneAndUpdate(
+      .updateOne(
         { promoId: id },
         {
           $push: {

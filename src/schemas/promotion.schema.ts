@@ -10,4 +10,5 @@ export const PromotionSchema = new mongoose.Schema({
   start: Date,
   end: Date,
   redeemUrl: String,
+  redeemedUsers: Array,
 });
